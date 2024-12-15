@@ -10,7 +10,7 @@ from tensorflow.keras import regularizers
 from tensorflow.keras.layers import Dropout
 from tensorflow.keras.models import load_model
 from scipy import stats
-import joblib
+
 from scipy.fft import fft
 from joblib import dump, load
 from sklearn.preprocessing import StandardScaler
@@ -32,7 +32,6 @@ janela_tempo=100
 modelo = None
 modelo_rf = None
 classes=None
-encoder =None
 
 def autocorrelacao(sinal):
     
@@ -211,7 +210,7 @@ def prepararDadosParaCNN(dados):
     global janela_tempo
     global min_amostras
     global classes
-    global encoder
+
     input = []  # Lista para as entradas
     out = []  # Lista para as (atividades)
 
@@ -324,10 +323,6 @@ def extrair_caracteristicas(dados):
     acf_y = autocorrelacao(Y)
     acf_z = autocorrelacao(Z)
     
-    entropia_x = entropia_shannon(X)
-    entropia_y = entropia_shannon(Y)
-    entropia_z = entropia_shannon(Z)
-    
     mav_x = mav(X)
     mav_y = mav(Y)
     mav_z = mav(Z)
@@ -336,15 +331,6 @@ def extrair_caracteristicas(dados):
     rms_y = rms(Y)
     rms_z = rms(Z)
     
-    dist_euclidiana = distancia_euclidiana(dados)
-
-    amplitude_x = amplitude(X)
-    amplitude_y = amplitude(Y)
-    amplitude_z = amplitude(Z)
-    
-    variancia_x = variancia(X)
-    variancia_y = variancia(Y)
-    variancia_z = variancia(Z)
     
     poder_x = poder_espectral(X)
     poder_y = poder_espectral(Y)
@@ -425,7 +411,6 @@ def modeloRandomTree(dados):
 def salvarModelo(str):
     global modelo
     global modelo_rf
-    global classes
     if str=="CNN":
         if modelo:
             # Garantir que a pasta 'modelos' exista, caso contrário, cria-a
@@ -440,12 +425,6 @@ def salvarModelo(str):
             print("-------------------------------------------------------------------------------------------------------------------------------------------")
             print(f"Modelo salvo com sucesso em {os.path.join(pasta_modelos, nome + '.keras')}")
             print("-------------------------------------------------------------------------------------------------------------------------------------------")
-            # Salvar o LabelEncoder, se existir
-            if 'encoder' in globals() and encoder is not None:
-                joblib.dump(encoder, os.path.join(pasta_modelos, nome + '_label_encoder.joblib'))
-                print(f"LabelEncoder salvo com sucesso em {os.path.join(pasta_modelos, nome + '_label_encoder.joblib')}")
-            else:
-                print("Nenhum LabelEncoder encontrado para salvar.")
         else:
             print("-------------------------------------------------------------------------------------------------------------------------------------------")
             print("Nenhum modelo CNN para salvar!")
@@ -716,6 +695,7 @@ def main():
     global modelo
     global modelo_rf 
     global classes
+
     dados_originais=[]
     os.system("cls")
     dados_originais=leituraTodosDados(dados_originais)
