@@ -194,6 +194,30 @@ def printDados(dados):
                 train += 1
                 Strain += len(amostras)
                 contador["train"][actividade] += 1
+
+
+    data = []
+    for tipo in ['train', 'test', 'validation']:
+        for atividade in atividades:
+            data.append({
+                "Tipo": tipo.capitalize(),
+                "Atividade": atividade,
+                "Quantidade": contador[tipo][atividade]
+            })
+
+    df = pd.DataFrame(data)
+
+    # Gráfico de barras empilhadas com Seaborn
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x="Tipo", y="Quantidade", hue="Atividade", data=df, palette="Set2")
+    plt.title("Distribuição das Atividades por Tipo de Dados")
+    plt.xlabel("Conjunto de Dados")
+    plt.ylabel("Quantidade de Amostras")
+    plt.legend(title="Atividade")
+    plt.tight_layout()
+
+    # Mostrar o gráfico
+    plt.show()
     
     print("-------------------------------------------------------------------------------------------------------------------------------------------")
     print(f"|{'Tipo':^20s}|{'Media de amostras':^25s}|{'Quantidade de dados':^25s}|{'Queda':^10s}|{'Movimento':^15s}|{'Levantar':^15s}|{'Deitar':^10s}|{'Sentar':^10s}|")
@@ -363,22 +387,10 @@ def tree(dados_treino,labels_treino,dados_teste,labels_teste):
     X = np.array(X)
     y = LabelEncoder().fit_transform(y)  # Codificar as labels para valores numéricos
 
-    # Treinamento do modelo Random Forest
+    # 
     modelo_rf = RandomForestClassifier(n_estimators=100, random_state=42)
     modelo_rf.fit(X, y)
 
-    # Avaliação do modelo (previsão para novos dados)
-    y_pred = modelo_rf.predict(X)
-    accuracy = np.mean(y_pred == y)
-    print(f'Acurácia: {accuracy:.2f}')
-    
-    # Exibir mais métricas de avaliação
-    print("\nRelatório de Classificação:")
-    print(classification_report(y, y_pred))
-
-    # Matriz de Confusão
-    print("\nMatriz de Confusão:")
-    print(confusion_matrix(y, y_pred))
 
     X = []
     y = []
@@ -388,11 +400,8 @@ def tree(dados_treino,labels_treino,dados_teste,labels_teste):
 
     y_pred = modelo_rf.predict(X)
     accuracy = np.mean(y_pred == y)
-    print(f'Acurácia: {accuracy:.2f}')
+    print(f'Precisao: {accuracy:.2f}')
     
-    # Exibir mais métricas de avaliação
-    print("\nRelatório de Classificação:")
-    print(classification_report(y, y_pred))
 
     # Matriz de Confusão
     print("\nMatriz de Confusão:")
@@ -703,7 +712,7 @@ def main():
     print(f"Numero de ficheiros rejeitados:{count_error}")
     while True:
         print("Menu:")
-        print("Opçoes (utilize o teclado para selecionar as respetivas funçoes):")
+        print("Opçoes :")
         print("1-Modelo CNN")
         print("2-Guardar modelo CNN")
         print("3-Carregar modelo CNN")
