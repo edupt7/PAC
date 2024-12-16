@@ -724,7 +724,7 @@ def main():
         print("9-comparar modelos CNN vs Forest")
         print("r-remove uma das actividades")
         print("o-restaura os dados todos")
-        print("p-print dos resultados dos modelos ate agora usados")
+        print("p-print estatisticos dos dados")
         print("m-mudar o numero minimo de amostras")
         print("j-mudar o numero janela de tempo a considerar")
         print("0-exit")
